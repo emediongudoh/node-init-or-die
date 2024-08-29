@@ -63,6 +63,26 @@ let server = app.listen(8000, () => {
     logger.info(`${NODE_ENV} server listening on port ${PORT}`);
 });
 
+// Catch all incoming 404 Not Found error
+app.use(async (req, res, next) => {
+    next(
+        createHttpError.NotFound(
+            'The requested resource could not be found on this server'
+        )
+    );
+});
+
+// Handle HTTP errors
+app.use(async (err, req, res, next) => {
+    res.status(err.status || 500);
+    res.send({
+        error: {
+            status: err.status || 500,
+            message: err.message,
+        },
+    });
+});
+
 // Terminate server on error
 const exitHandler = () => {
     if (server) {
