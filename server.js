@@ -8,6 +8,9 @@ import compression from 'compression';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 
+// Config imports
+import logger from './configs/logger.config.js';
+
 // Create express app
 const app = express();
 
@@ -57,5 +60,5 @@ app.get(`/hello`, (req, res) => {
 
 // Start development server
 app.listen(8000, () => {
-    console.log(`${NODE_ENV} server listening on port ${PORT}`);
+    logger.info(`${NODE_ENV} server listening on port ${PORT}`);
 });
