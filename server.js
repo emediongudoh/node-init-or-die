@@ -59,6 +59,34 @@ app.get(`/hello`, (req, res) => {
 });
 
 // Start development server
-app.listen(8000, () => {
+let server = app.listen(8000, () => {
     logger.info(`${NODE_ENV} server listening on port ${PORT}`);
+});
+
+// Terminate server on error
+const exitHandler = () => {
+    if (server) {
+        logger.info(`Terminate the ${NODE_ENV} server on port ${PORT}`);
+        process.exit(1);
+    } else {
+        process.exit(1);
+    }
+};
+
+// Handle unexpected error
+const unexpectedErrorHandler = err => {
+    logger.error(err);
+    exitHandler();
+};
+
+// Listen for server error logs
+process.on('uncaughtException', unexpectedErrorHandler);
+process.on('unhandledRejection', unexpectedErrorHandler);
+
+// Terminate server gracefully -> LINUX machine
+process.on('SIGTERM', () => {
+    if (server) {
+        logger.info(`Terminate the ${NODE_ENV} server on port ${PORT}`);
+        process.exit(1);
+    }
 });
