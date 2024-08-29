@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 import compression from 'compression';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
+import mongoose from 'mongoose';
 
 // Config imports
 import logger from './configs/logger.config.js';
@@ -19,6 +20,20 @@ dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 const NODE_ENV = process.env.NODE_ENV;
+const DATABASE_URL = process.env.DATABASE_URL;
+
+// Connect to MongoDB atlas
+mongoose
+    .connect(DATABASE_URL)
+    .then(() =>
+        logger.info(`Database connected successfully -> ${DATABASE_URL}`)
+    );
+
+// Terminate server on MongoDB error
+mongoose.connection.on('error', err => {
+    logger.error(`Database connection failed -> ${err.message}`);
+    process.exit(1);
+});
 
 // HTTP request logger middleware for node.js
 if (NODE_ENV !== 'production') {
@@ -59,7 +74,7 @@ app.get(`/hello`, (req, res) => {
 });
 
 // Start development server
-let server = app.listen(8000, () => {
+let server = app.listen(PORT, () => {
     logger.info(`${NODE_ENV} server listening on port ${PORT}`);
 });
 
