@@ -8,6 +8,7 @@ import compression from 'compression';
 import fileUpload from 'express-fileupload';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import createHttpError from 'http-errors';
 
 // Config imports
 import logger from './configs/logger.config.js';
